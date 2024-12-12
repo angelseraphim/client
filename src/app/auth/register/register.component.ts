@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../service/auth.service';
 import {TokenStorageService} from '../../service/token-storage.service';
 import {NotificationService} from '../../service/notification.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
   }
 
@@ -45,9 +47,16 @@ export class RegisterComponent implements OnInit {
       lastname: this.registerForm.value.lastname,
       password: this.registerForm.value.password,
       confirmPassword: this.registerForm.value.confirmPassword,
+
     }).subscribe(data => {
       console.log(data);
       this.notificationService.showSnackBar('Successfully Registered!');
+
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+        console.log('Задержка завершена');
+      }, 1000);
+
     }, error => {
       this.notificationService.showSnackBar('Something went wrong during registration');
     });

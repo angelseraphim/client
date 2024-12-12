@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-const IMAGE_API = 'http://localhost:8080/api/image/';
+const IMAGE_API = 'http://193.164.17.212:8080/api/image/';
 
 @Injectable({
   providedIn: 'root'
