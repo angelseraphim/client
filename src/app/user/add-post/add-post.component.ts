@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {Post} from '../../models/Post';
-import {PostService} from '../../service/post.service';
-import {ImageUploadService} from '../../service/image-upload.service';
-import {NotificationService} from '../../service/notification.service';
-import {Router} from '@angular/router';
+import { Post } from '../../models/Post';
+import { PostService } from '../../service/post.service';
+import { ImageUploadService } from '../../service/image-upload.service';
+import { NotificationService } from '../../service/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-post',
@@ -14,17 +14,18 @@ import {Router} from '@angular/router';
 export class AddPostComponent implements OnInit {
 
   postForm: FormGroup;
-  selectedFile: File;
+  selectedFile: File | null = null;
   isPostCreated = false;
-  createdPost: Post;
-  previewImgURL: any;
+  createdPost: Post | null = null;
+  previewImgURL: string | ArrayBuffer | null = null;
 
-  constructor(private postService: PostService,
-              private imageUploadService: ImageUploadService,
-              private notificationService: NotificationService,
-              private router: Router,
-              private fb: FormBuilder) {
-  }
+  constructor(
+    private postService: PostService,
+    private imageUploadService: ImageUploadService,
+    private notificationService: NotificationService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.postForm = this.createPostForm();
@@ -32,44 +33,62 @@ export class AddPostComponent implements OnInit {
 
   createPostForm(): FormGroup {
     return this.fb.group({
-      title: ['', Validators.compose([Validators.required])],
-      caption: ['', Validators.compose([Validators.required])],
-      location: ['', Validators.compose([Validators.required])],
+      title: ['', Validators.required],
+      caption: ['', Validators.required],
+      location: ['', Validators.required],
     });
   }
 
   submit(): void {
-    setTimeout(() => {
-      this.router.navigate(['/profile']);
-      console.log('Задержка завершена');
-    }, 500);
+    if (this.postForm.invalid) {
+      this.notificationService.showSnackBar('Please fill in all fields');
+      return;
+    }
 
-    this.postService.createPost({
+    const postPayload = {
       title: this.postForm.value.title,
       caption: this.postForm.value.caption,
       location: this.postForm.value.location,
-    }).subscribe(data => {
-      this.createdPost = data;
-      console.log(data);
+    };
 
-      if (this.createdPost.id != null) {
-        this.imageUploadService.uploadImageToPost(this.selectedFile, this.createdPost.id)
-          .subscribe(() => {
-            this.notificationService.showSnackBar('Post created successfully');
-            this.isPostCreated = true;
+    this.postService.createPost(postPayload).subscribe({
+      next: (post) => {
+        this.createdPost = post;
+        console.log('Post created:', post);
+
+        if (this.selectedFile && post.id) {
+          this.imageUploadService.uploadImageToPost(this.selectedFile, post.id).subscribe({
+            next: () => {
+              this.notificationService.showSnackBar('Post created successfully');
+              this.isPostCreated = true;
+              this.router.navigate(['/profile']);
+            },
+            error: (err) => {
+              console.error('Image upload failed:', err);
+              this.notificationService.showSnackBar('Image upload failed');
+            },
           });
-      }
+        } else {
+          this.router.navigate(['/profile']);
+        }
+      },
+      error: (err) => {
+        console.error('Post creation failed:', err);
+        this.notificationService.showSnackBar('Post creation failed');
+      },
     });
   }
 
-  onFileSelected(event): void {
-    this.selectedFile = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
 
-    const reader = new FileReader();
-    reader.readAsDataURL(this.selectedFile);
-    reader.onload = (e) => {
-      this.previewImgURL = reader.result;
-    };
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImgURL = reader.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
-
 }

@@ -12,9 +12,14 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
+    "skipLibCheck": true,
     "lib": [
       "es2018",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/dg.d.ts"
+  ]
 }

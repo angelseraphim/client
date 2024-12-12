@@ -4,3 +4,23 @@
   width: 200px;
   height: 200px;
 }
+
+.post-container {
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 500px;
+  background-color: white;
+  position: relative;
+  top: 50%;
+  /* left: 50%;
+  transform: translate(-50%, -50%); */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.button{
+  border-radius: 10px;
+  border-width: 1px;
+  background: none;
+
+}

@@ -92,7 +92,9 @@
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "https://maps.api.2gis.ru/2.0/loader.js?pkg=full"
+            ]
           }
         },
         "lint": {
