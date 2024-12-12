@@ -53,12 +53,12 @@ export class UserPostsComponent implements OnInit {
 
   removePost(post: Post, index: number): void {
     console.log(post);
-    const result = confirm('Do you really want to delete this post?');
+    const result = confirm('Do you really want to delete this event?');
     if (result) {
       this.postService.deletePost(post.id)
         .subscribe(() => {
           this.posts.splice(index, 1);
-          this.notificationService.showSnackBar('Post deleted');
+          this.notificationService.showSnackBar('Event deleted');
         });
     }
   }

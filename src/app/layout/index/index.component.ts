@@ -6,6 +6,7 @@ import {UserService} from '../../service/user.service';
 import {CommentService} from '../../service/comment.service';
 import {NotificationService} from '../../service/notification.service';
 import {ImageUploadService} from '../../service/image-upload.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-index',
@@ -23,8 +24,14 @@ export class IndexComponent implements OnInit {
     private userService: UserService,
     private commentService: CommentService,
     private notificationService: NotificationService,
-    private imageService: ImageUploadService
+    private imageService: ImageUploadService,
+    private router: Router
   ) { }
+
+  addEvent(): void {
+    console.log('Add Event button clicked!');
+    this.router.navigate(['/add']);
+  }
 
   ngOnInit(): void {
     this.postService.getAllPosts()

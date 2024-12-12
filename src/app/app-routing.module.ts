@@ -20,6 +20,7 @@ const routes: Routes = [
       {path: 'add', component: AddPostComponent, canActivate: [AuthGuardService]}
     ]
   },
+  {path: 'add', component: AddPostComponent},
   {path: '', redirectTo: 'landpage', pathMatch: 'full'}
 ];
 

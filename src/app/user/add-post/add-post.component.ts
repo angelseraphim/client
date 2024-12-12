@@ -39,7 +39,11 @@ export class AddPostComponent implements OnInit {
   }
 
   submit(): void {
-
+    setTimeout(() => {
+      this.router.navigate(['/profile']);
+      console.log('Задержка завершена');
+    }, 500);
+    
     this.postService.createPost({
       title: this.postForm.value.title,
       caption: this.postForm.value.caption,
@@ -53,7 +57,6 @@ export class AddPostComponent implements OnInit {
           .subscribe(() => {
             this.notificationService.showSnackBar('Post created successfully');
             this.isPostCreated = true;
-            this.router.navigate(['/profile']);
           });
       }
     });

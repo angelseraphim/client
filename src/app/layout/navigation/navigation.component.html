@@ -1,10 +1,9 @@
 <div class="header">
   <a routerLink="/main" class="logo">Event <span>Map</span></a>
 
-
   <nav class="navbar">
       <a routerLink="/main">Home</a>
-      <a routerLink="/login">Login</a>
+      <a routerLink="/login" *ngIf="!isLoggedIn">Login</a>
       <a routerLink="/landpage">Info</a>
   </nav>
 

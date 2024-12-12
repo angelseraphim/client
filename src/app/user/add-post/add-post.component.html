@@ -1,9 +1,9 @@
 <div>
   <div style="text-align: right">
-    <button mat-flat-button color="primary" routerLink="/profile">My Posts</button>
+    <button mat-flat-button color="primary" routerLink="/profile">My events</button>
   </div>
 
-  <h2>Create Post</h2>
+  <h2>Create post about event</h2>
   <form [formGroup]="postForm">
 
     <img class="post-image" [src]="previewImgURL || 'https://www.missingdogsuk.co.uk/wp-content/plugins/wp-job-manager-resumes/assets/images/candidate.png'" alt="user image">
@@ -33,7 +33,7 @@
 
     <div style="text-align: right">
       <button mat-flat-button color="primary" [disabled]="postForm.invalid" (click)="submit()">
-        Create Post
+        Create event
       </button>
     </div>
 
