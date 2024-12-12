@@ -1,36 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import {Post} from '../../models/Post';
-import {User} from '../../models/User';
-import {PostService} from '../../service/post.service';
-import {UserService} from '../../service/user.service';
-import {CommentService} from '../../service/comment.service';
-import {NotificationService} from '../../service/notification.service';
-import {ImageUploadService} from '../../service/image-upload.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Post } from '../../models/Post';
+import { PostService } from '../../service/post.service';
+import { ImageUploadService } from '../../service/image-upload.service';
+import { CommentService } from '../../service/comment.service';
+import { NotificationService } from '../../service/notification.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../service/user.service'; // Импортируем UserService
+
+declare var DG: any; // Объявляем DG для работы с 2ГИС API
 
 @Component({
   selector: 'app-index',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.css']
 })
-export class IndexComponent implements OnInit {
+export class IndexComponent implements OnInit, OnDestroy {
 
   isPostsLoaded = false;
-  posts: Post[];
   isUserDataLoaded = false;
-  user: User;
+  posts: Post[] = [];
+  user: any;
 
-  constructor(private postService: PostService,
-    private userService: UserService,
+  constructor(
+    private postService: PostService,
+    private imageService: ImageUploadService,
     private commentService: CommentService,
     private notificationService: NotificationService,
-    private imageService: ImageUploadService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private userService: UserService // Добавляем userService в конструктор
+  ) {}
 
-  showEventsMap(): void {
-    console.log('Events Map button clicked!');
-    this.router.navigate(['/map']);
+  ngOnInit(): void {
+    const script = document.createElement('script');
+    script.src = 'https://maps.api.2gis.ru/2.0/loader.js?pkg=full';
+    document.body.appendChild(script);
+
+    script.onload = () => {
+      this.postService.getAllPosts().subscribe(data => {
+        this.posts = data;
+        this.getImagesToPosts(this.posts);
+        this.getCommentsToPosts(this.posts);
+        this.isPostsLoaded = true;
+        this.initializeMaps();
+      });
+
+      // Загружаем данные пользователя
+      this.userService.getCurrentUser().subscribe(data => {
+        this.user = data;
+        this.isUserDataLoaded = true;
+      });
+    };
   }
 
   addEvent(): void {
@@ -38,72 +57,60 @@ export class IndexComponent implements OnInit {
     this.router.navigate(['/add']);
   }
 
-  ngOnInit(): void {
-    this.postService.getAllPosts()
-      .subscribe(data => {
-        console.log(data);
-        this.posts = data;
-        this.getImagesToPosts(this.posts);
-        this.getCommentsToPosts(this.posts);
-        this.isPostsLoaded = true;
-      });
+  showEventsMap(): void {
+    console.log('Events Map button clicked!');
+    this.router.navigate(['/map']);
+  }
 
-    this.userService.getCurrentUser()
-      .subscribe(data => {
-        console.log(data);
-        this.user = data;
-        this.isUserDataLoaded = true;
-      })
+  initializeMaps(): void {
+    this.posts.forEach((post, index) => {
+      if (post.location) {
+        const coords = post.location.split(',').map(coord => parseFloat(coord.trim()));
+        const latitude = coords[0];
+        const longitude = coords[1];
+
+        if (latitude && longitude) {
+          const mapId = 'map-' + index;
+          DG.then(() => {
+            const map = DG.map(mapId, {
+              center: [latitude, longitude],
+              zoom: 13
+            });
+
+            DG.marker([latitude, longitude])
+              .addTo(map)
+              .bindPopup(`Location: ${post.location}`);
+          });
+        }
+      }
+    });
   }
 
   getImagesToPosts(posts: Post[]): void {
     posts.forEach(p => {
-      this.imageService.getImageToPost(p.id)
-        .subscribe(data => {
-          p.image = data.imageBytes;
-        })
+      this.imageService.getImageToPost(p.id).subscribe(data => {
+        p.image = data.imageBytes;
+      });
     });
   }
 
   getCommentsToPosts(posts: Post[]): void {
     posts.forEach(p => {
-      this.commentService.getCommentsToPost(p.id)
-        .subscribe(data => {
-          p.comments = data
-        })
+      this.commentService.getCommentsToPost(p.id).subscribe(data => {
+        p.comments = data;
+      });
     });
   }
 
-  likePost(postId: number, postIndex: number): void {
-    const  post = this.posts[postIndex];
-    console.log(post);
-
-    if (!post.usersLiked.includes(this.user.username)) {
-      this.postService.likePost(postId, this.user.username)
+  removePost(post: Post, index: number): void {
+    const result = confirm('Do you really want to delete this event?');
+    if (result) {
+      this.postService.deletePost(post.id)
         .subscribe(() => {
-          post.usersLiked.push(this.user.username);
-          this.notificationService.showSnackBar('Liked!');
-        });
-    } else {
-      this.postService.likePost(postId, this.user.username)
-        .subscribe(() => {
-          const index = post.usersLiked.indexOf(this.user.username, 0);
-          if (index > -1) {
-            post.usersLiked.splice(index, 1);
-          }
+          this.posts.splice(index, 1);
+          this.notificationService.showSnackBar('Event deleted');
         });
     }
-  }
-
-  postComment(message: string, postId: number, postIndex: number): void {
-    const post = this.posts[postIndex];
-
-    console.log(post);
-    this.commentService.addToCommentToPost(postId, message)
-      .subscribe(data => {
-        console.log(data);
-        post.comments.push(data);
-      });
   }
 
   formatImage(img: any): any {
@@ -113,4 +120,24 @@ export class IndexComponent implements OnInit {
     return 'data:image/jpeg;base64,' + img;
   }
 
+  deleteComment(commentId: number, postIndex: number, commentIndex: number): void {
+    const post = this.posts[postIndex];
+    this.commentService.deleteComment(commentId)
+      .subscribe(() => {
+        this.notificationService.showSnackBar('Comment removed');
+        post.comments.splice(commentIndex, 1);
+      });
+  }
+
+  ngOnDestroy() {
+    if (this.posts && this.posts.length > 0) {
+      this.posts.forEach((_, index) => {
+        const mapId = 'map-' + index;
+        const mapElement = document.getElementById(mapId);
+        if (mapElement) {
+          mapElement.innerHTML = '';
+        }
+      });
+    }
+  }
 }

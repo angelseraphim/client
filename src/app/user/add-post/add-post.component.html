@@ -5,8 +5,9 @@
 
   <h2>Create post about event</h2>
   <form [formGroup]="postForm">
-
-    <img class="post-image" [src]="previewImgURL || 'https://www.missingdogsuk.co.uk/wp-content/plugins/wp-job-manager-resumes/assets/images/candidate.png'" alt="user image">
+    <img class="post-image" 
+         [src]="previewImgURL || 'https://www.missingdogsuk.co.uk/wp-content/plugins/wp-job-manager-resumes/assets/images/candidate.png'" 
+         alt="user image">
 
     <input type="file"
            style="display: none"
@@ -17,25 +18,24 @@
 
     <mat-form-field class="w-100" appearance="outline">
       <mat-label>Title</mat-label>
-      <input matInput
-             formControlName="title">
-    </mat-form-field>
-    <mat-form-field class="w-100" appearance="outline">
-      <mat-label>Caption</mat-label>
-      <input matInput
-             formControlName="caption">
-    </mat-form-field>
-    <mat-form-field class="w-100" appearance="outline">
-      <mat-label>Location</mat-label>
-      <input matInput
-             formControlName="location">
+      <input matInput formControlName="title">
     </mat-form-field>
 
+    <mat-form-field class="w-100" appearance="outline">
+      <mat-label>Caption</mat-label>
+      <input matInput formControlName="caption">
+    </mat-form-field>
+
+    <!-- Вставляем компонент карты -->
+    <h3>Select location on the map:</h3>
+    <app-map (locationSelected)="onLocationSelected($event)"></app-map>
+
     <div style="text-align: right">
-      <button mat-flat-button color="primary" [disabled]="postForm.invalid" (click)="submit()">
+      <button mat-flat-button color="primary" 
+              [disabled]="postForm.invalid || !selectedLocation" 
+              (click)="submit()">
         Create event
       </button>
     </div>
-
   </form>
 </div>

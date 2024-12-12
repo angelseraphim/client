@@ -27,7 +27,13 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-}
+    background-image: url("./../../../assets/img/background.png");
+    background-size: cover;
+    background-position: center; /* Центрирует картинку */
+    background-repeat: no-repeat; /* Запрещает повторение картинки */
+
+
+    }
 
 .home-content {
     display: flex;
@@ -41,6 +47,8 @@ section {
     font-weight: 700;
     line-height: 1;
     margin-top: 1.5rem;
+    color: #00ff51;
+    
 }
 
 .home-content h3 {

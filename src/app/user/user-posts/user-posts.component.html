@@ -1,4 +1,4 @@
-<div *ngIf="isUserPostsLoaded" xmlns="http://www.w3.org/1999/html">
+<div *ngIf="isUserPostsLoaded">
   <div style="text-align: right">
     <button mat-flat-button color="primary" routerLink="/profile/add">Add event</button>
   </div>
@@ -13,13 +13,14 @@
     </mat-card-header>
     <img mat-card-image [src]="formatImage(post.image)" alt="post image">
     <mat-card-content>
-      <p>
-        {{post.caption}}
-      </p>
+      <p>{{post.caption}}</p>
     </mat-card-content>
 
+    <div id="map-{{i}}" style="width: 100%; height: 300px;"></div>
+
     <div style="text-align: left">
-      <p *ngFor="let comment of post.comments; let c = index"><span style="font-weight: 500">{{comment.username}}</span>: {{comment.message}}
+      <p *ngFor="let comment of post.comments; let c = index">
+        <span style="font-weight: 500">{{comment.username}}</span>: {{comment.message}}
         <button color="accent" mat-button (click)="deleteComment(comment.id, i, c)">
           <mat-icon color="accent">clear</mat-icon>
         </button>
@@ -33,6 +34,8 @@
       </button>
     </mat-card-actions>
 
-    <mat-card-subtitle align="start">Likes: {{post.likes}} <span *ngIf="post.likes > 0">by {{post.usersLiked}}</span></mat-card-subtitle>
+    <mat-card-subtitle align="start">
+      Likes: {{post.likes}} <span *ngIf="post.likes > 0">by {{post.usersLiked}}</span>
+    </mat-card-subtitle>
   </mat-card>
 </div>

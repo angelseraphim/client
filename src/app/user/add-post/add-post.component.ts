@@ -18,6 +18,7 @@ export class AddPostComponent implements OnInit {
   isPostCreated = false;
   createdPost: Post | null = null;
   previewImgURL: string | ArrayBuffer | null = null;
+  selectedLocation: { lat: number; lng: number } | null = null; // Хранение выбранных координат
 
   constructor(
     private postService: PostService,
@@ -35,27 +36,35 @@ export class AddPostComponent implements OnInit {
     return this.fb.group({
       title: ['', Validators.required],
       caption: ['', Validators.required],
-      location: ['', Validators.required],
+      // Удалено поле location
     });
   }
 
+  onLocationSelected(location: { lat: number; lng: number }): void {
+    this.selectedLocation = location;
+    console.log('Location selected:', location);
+  }
+
   submit(): void {
-    if (this.postForm.invalid) {
-      this.notificationService.showSnackBar('Please fill in all fields');
+    if (this.postForm.invalid || !this.selectedLocation) {
+      this.notificationService.showSnackBar('Please fill in all fields and select a location');
       return;
     }
-
+  
+    // Преобразуем координаты в строку
+    const locationString = `${this.selectedLocation.lat},${this.selectedLocation.lng}`;
+  
     const postPayload = {
       title: this.postForm.value.title,
       caption: this.postForm.value.caption,
-      location: this.postForm.value.location,
+      location: locationString, // Передаем строку
     };
-
+  
     this.postService.createPost(postPayload).subscribe({
       next: (post) => {
         this.createdPost = post;
         console.log('Post created:', post);
-
+  
         if (this.selectedFile && post.id) {
           this.imageUploadService.uploadImageToPost(this.selectedFile, post.id).subscribe({
             next: () => {
