@@ -8,6 +8,7 @@ import {ProfileComponent} from './user/profile/profile.component';
 import {UserPostsComponent} from './user/user-posts/user-posts.component';
 import {AddPostComponent} from './user/add-post/add-post.component';
 import { LandingPageComponent } from './layout/landing-page/landing-page.component';
+import {MapComponent} from './layout/map/map.component';
 
 const routes: Routes = [
   {path: 'landpage', component: LandingPageComponent},
@@ -21,6 +22,7 @@ const routes: Routes = [
     ]
   },
   {path: 'add', component: AddPostComponent},
+  {path: 'map', component: MapComponent},
   {path: '', redirectTo: 'landpage', pathMatch: 'full'}
 ];
 

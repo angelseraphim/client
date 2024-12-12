@@ -19,6 +19,7 @@ import { UserPostsComponent } from './user/user-posts/user-posts.component';
 import { EditUserComponent } from './user/edit-user/edit-user.component';
 import { AddPostComponent } from './user/add-post/add-post.component';
 import { LandingPageComponent } from './layout/landing-page/landing-page.component';
+import { MapComponent } from './layout/map/map.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { LandingPageComponent } from './layout/landing-page/landing-page.compone
     UserPostsComponent,
     EditUserComponent,
     AddPostComponent,
+    MapComponent,
   ],
   imports: [
     BrowserModule,

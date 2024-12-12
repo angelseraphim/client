@@ -30,7 +30,7 @@ export class IndexComponent implements OnInit {
 
   showEventsMap(): void {
     console.log('Events Map button clicked!');
-    // Здесь можно добавить логику для отображения карты событий
+    this.router.navigate(['/map']);
   }
 
   addEvent(): void {
