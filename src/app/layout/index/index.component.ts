@@ -28,6 +28,11 @@ export class IndexComponent implements OnInit {
     private router: Router
   ) { }
 
+  showEventsMap(): void {
+    console.log('Events Map button clicked!');
+    // Здесь можно добавить логику для отображения карты событий
+  }
+
   addEvent(): void {
     console.log('Add Event button clicked!');
     this.router.navigate(['/add']);

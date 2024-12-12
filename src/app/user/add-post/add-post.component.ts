@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {Post} from '../../models/Post';
 import {PostService} from '../../service/post.service';
 import {ImageUploadService} from '../../service/image-upload.service';
@@ -43,7 +43,7 @@ export class AddPostComponent implements OnInit {
       this.router.navigate(['/profile']);
       console.log('Задержка завершена');
     }, 500);
-    
+
     this.postService.createPost({
       title: this.postForm.value.title,
       caption: this.postForm.value.caption,
