@@ -20,6 +20,7 @@ import { EditUserComponent } from './user/edit-user/edit-user.component';
 import { AddPostComponent } from './user/add-post/add-post.component';
 import { LandingPageComponent } from './layout/landing-page/landing-page.component';
 import { MapComponent } from './layout/map/map.component';
+import { AllEventsMapComponent } from './layout/all-events-map/all-events-map.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MapComponent } from './layout/map/map.component';
     EditUserComponent,
     AddPostComponent,
     MapComponent,
+    AllEventsMapComponent,
   ],
   imports: [
     BrowserModule,

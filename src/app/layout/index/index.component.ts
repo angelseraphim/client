@@ -59,7 +59,7 @@ export class IndexComponent implements OnInit, OnDestroy {
 
   showEventsMap(): void {
     console.log('Events Map button clicked!');
-    this.router.navigate(['/map']);
+    this.router.navigate(['/allmap']);
   }
 
   initializeMaps(): void {
