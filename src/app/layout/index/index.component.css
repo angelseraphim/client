@@ -18,3 +18,12 @@
 .not-liked {
   color: grey;
 }
+
+.index-page{
+  background-color: white;
+  color: black;
+}
+
+.empty-page{
+  color: black;
+}

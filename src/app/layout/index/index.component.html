@@ -29,3 +29,6 @@
 
   </mat-card>
 </div>
+<div *ngIf="!isPostsLoaded || !isUserDataLoaded" class="empty-page">
+    Простите, нечего не найдено :(
+</div>
