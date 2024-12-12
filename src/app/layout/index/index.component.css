@@ -5,6 +5,10 @@
   padding-top: 3rem;
 }
 
+.post-header{
+  display: flex;
+}
+
 .post-card {
   display: block;
   margin: 2rem auto;
