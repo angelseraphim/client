@@ -14,6 +14,7 @@ import { AllEventsMapComponent } from './layout/all-events-map/all-events-map.co
 const routes: Routes = [
   {path: 'landpage', component: LandingPageComponent},
   {path: 'login', component: LoginComponent},
+  
   {path: 'register', component: RegisterComponent},
   {path: 'main', component: IndexComponent, canActivate: [AuthGuardService]},
   {
